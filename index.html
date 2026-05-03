@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bảng Sản Phẩm</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #f5f3ef;
+    --surface: #ffffff;
+    --border: #e2ddd6;
+    --accent: #c8813a;
+    --accent-dark: #a5621e;
+    --text: #1a1612;
+    --text-muted: #7a7168;
+    --danger: #c0392b;
+    --success: #27ae60;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --shadow-hover: 0 8px 32px rgba(0,0,0,0.14);
+    --radius: 12px;
+    --transition: 0.22s cubic-bezier(.4,0,.2,1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    color: var(--accent);
+    letter-spacing: .5px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 8px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+    letter-spacing: .2px;
+  }
+
+  .btn-mode {
+    background: var(--bg);
+    color: var(--text-muted);
+    border: 1.5px solid var(--border);
+  }
+  .btn-mode:hover { background: var(--border); color: var(--text); }
+  .btn-mode.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .btn-add {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-add:hover { background: var(--accent-dark); }
+
+  .btn-danger {
+    background: #fdf0ef;
+    color: var(--danger);
+    border: 1.5px solid #f5c6c2;
+  }
+  .btn-danger:hover { background: var(--danger); color: #fff; }
+
+  /* ── GRID ── */
+  main {
+    padding: 28px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); }
+
+  /* image area */
+  .card-img {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    background: #ede9e2;
+    display: block;
+    cursor: pointer;
+    transition: transform .4s ease;
+  }
+  .card:hover .card-img { transform: scale(1.03); }
+
+  .card-img-placeholder {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, #ede9e2 0%, #d8d1c5 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #b5aa9e;
+    font-size: 2.5rem;
+  }
+
+  /* image wrapper clips overflow for zoom */
+  .card-img-wrap {
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+
+  /* VIEW mode link overlay */
+  .card-img-wrap .open-link {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: none;
+  }
+  .mode-view .card-img-wrap .open-link { display: block; }
+
+  .card-body {
+    padding: 12px 14px 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* ── VIEW CARD ── */
+  .card-title-view {
+    font-size: .875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--text);
+    cursor: pointer;
+    user-select: text;
+    word-break: break-word;
+  }
+  .card-title-view:hover { color: var(--accent); }
+
+  .copy-toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1a1612;
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 99px;
+    font-size: .8rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    z-index: 9999;
+  }
+  .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .card-link-view {
+    font-size: .75rem;
+    color: var(--accent);
+    text-decoration: none;
+    word-break: break-all;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-link-view:hover { text-decoration: underline; }
+
+  /* ── EDIT CARD ── */
+  .card-edit-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 5px;
+    z-index: 10;
+  }
+  .mode-view .card-edit-actions { display: none; }
+
+  .icon-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .9rem;
+    cursor: pointer;
+    transition: var(--transition);
+    backdrop-filter: blur(4px);
+  }
+  .icon-btn-del { background: rgba(255,255,255,.85); color: var(--danger); }
+  .icon-btn-del:hover { background: var(--danger); color: #fff; }
+
+  .card-field {
+    width: 100%;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: .82rem;
+    padding: 7px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color .15s;
+  }
+  .card-field:focus { border-color: var(--accent); background: #fff; }
+  .card-field::placeholder { color: #bcb6ae; }
+
+  .card-field-title { font-weight: 600; font-size: .85rem; }
+
+  .img-paste-zone {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, #ede9e2 0%, #d8d1c5 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #a09890;
+    font-size: .78rem;
+    cursor: pointer;
+    border-bottom: 1px dashed var(--border);
+    position: relative;
+    transition: background .2s;
+  }
+  .img-paste-zone:hover { background: #e5dfd5; }
+  .img-paste-zone .icon { font-size: 1.8rem; }
+
+  .img-paste-zone input[type=text] {
+    width: 90%;
+    margin-top: 6px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: .75rem;
+    padding: 5px 8px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: rgba(255,255,255,.7);
+    color: var(--text);
+    outline: none;
+    text-align: center;
+  }
+  .img-paste-zone input[type=text]:focus { border-color: var(--accent); }
+
+  /* ── ADD CARD PLACEHOLDER ── */
+  .card-add {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    aspect-ratio: unset;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #bcb6ae;
+    font-size: .85rem;
+    cursor: pointer;
+    transition: var(--transition);
+    background: transparent;
+  }
+  .card-add:hover { border-color: var(--accent); color: var(--accent); background: rgba(200,129,58,.04); }
+  .card-add .big-plus { font-size: 2rem; line-height: 1; }
+
+  .mode-view .card-add { display: none; }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-muted);
+  }
+  .empty .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+  .empty p { font-size: .95rem; }
+
+  /* ── LOADING ── */
+  .loading {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 60px;
+    color: var(--text-muted);
+    font-size: .9rem;
+  }
+
+  /* ── MODE BADGE ── */
+  .mode-badge {
+    font-size: .72rem;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-weight: 600;
+    letter-spacing: .3px;
+  }
+  .mode-badge.view { background: #e8f5e9; color: #27ae60; }
+  .mode-badge.edit { background: #fff3e0; color: #e67e22; }
+
+  @media (max-width: 600px) {
+    main { padding: 16px; }
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    header { padding: 0 14px; }
+    .logo { font-size: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🛍 Shop Grid</div>
+  <div class="header-actions">
+    <span id="modeBadge" class="mode-badge view">👁 Xem</span>
+    <button class="btn btn-mode active" id="btnView" onclick="setMode('view')">👁 Xem</button>
+    <button class="btn btn-mode" id="btnEdit" onclick="setMode('edit')">✏️ Chỉnh sửa</button>
+  </div>
+</header>
+
+<main>
+  <div class="grid" id="grid">
+    <div class="loading">⏳ Đang tải dữ liệu...</div>
+  </div>
+</main>
+
+<div class="copy-toast" id="copyToast">✅ Đã copy tiêu đề!</div>
+
+<!-- Firebase SDKs -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
+import { getDatabase, ref, onValue, push, remove, update }
+  from "https://www.gstatic.com/firebasejs/10.12.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAnop9__w-HsHWaqjaPVYgCctrGNdWo34w",
+  authDomain: "tiktokwin-cbb94.firebaseapp.com",
+  databaseURL: "https://tiktokwin-cbb94-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tiktokwin-cbb94",
+  storageBucket: "tiktokwin-cbb94.firebasestorage.app",
+  messagingSenderId: "545558950214",
+  appId: "1:545558950214:web:539a4d5841290078917547",
+  measurementId: "G-C8KSTTKJRZ"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const PRODUCTS_REF = ref(db, 'products');
+
+// ── STATE ──
+let currentMode = 'view';
+let products = {}; // { id: { title, imageUrl, link } }
+
+// ── MODE ──
+window.setMode = function(mode) {
+  currentMode = mode;
+  document.body.className = 'mode-' + mode;
+  document.getElementById('btnView').classList.toggle('active', mode === 'view');
+  document.getElementById('btnEdit').classList.toggle('active', mode === 'edit');
+  const badge = document.getElementById('modeBadge');
+  badge.textContent = mode === 'view' ? '👁 Xem' : '✏️ Chỉnh sửa';
+  badge.className = 'mode-badge ' + mode;
+  renderGrid();
+};
+
+// ── FIREBASE LISTEN ──
+onValue(PRODUCTS_REF, snap => {
+  products = snap.val() || {};
+  renderGrid();
+});
+
+// ── RENDER ──
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  const ids = Object.keys(products);
+
+  let html = '';
+
+  if (ids.length === 0 && currentMode === 'view') {
+    html = `<div class="empty">
+      <div class="empty-icon">🛒</div>
+      <p>Chưa có sản phẩm nào. Chuyển sang chế độ chỉnh sửa để thêm!</p>
+    </div>`;
+  } else {
+    ids.forEach(id => {
+      const p = products[id];
+      if (currentMode === 'view') {
+        html += cardView(id, p);
+      } else {
+        html += cardEdit(id, p);
+      }
+    });
+    if (currentMode === 'edit') {
+      html += `<div class="card card-add" onclick="addProduct()">
+        <div class="big-plus">＋</div>
+        <span>Thêm sản phẩm</span>
+      </div>`;
+    }
+  }
+
+  grid.innerHTML = html;
+
+  // Bind edit events
+  if (currentMode === 'edit') {
+    ids.forEach(id => {
+      bindEditEvents(id);
+    });
+  }
+}
+
+function cardView(id, p) {
+  const imgHtml = p.imageUrl
+    ? `<img class="card-img" src="${esc(p.imageUrl)}" alt="${esc(p.title||'')}" loading="lazy"/>`
+    : `<div class="card-img-placeholder">🖼</div>`;
+
+  const linkHref = p.link || '#';
+  const titleHtml = p.title
+    ? `<div class="card-title-view" onclick="copyTitle('${esc(id)}')" title="Click để copy tiêu đề">${esc(p.title)}</div>`
+    : `<div class="card-title-view" style="color:#bcb6ae">Chưa có tiêu đề</div>`;
+
+  const linkHtml = p.link
+    ? `<a class="card-link-view" href="${esc(p.link)}" target="_blank" rel="noopener">${esc(p.link)}</a>`
+    : '';
+
+  return `<div class="card" data-id="${id}">
+    <div class="card-img-wrap">
+      ${imgHtml}
+      <a class="open-link" href="${linkHref}" target="_blank" rel="noopener"></a>
+    </div>
+    <div class="card-body">
+      ${titleHtml}
+      ${linkHtml}
+    </div>
+  </div>`;
+}
+
+function cardEdit(id, p) {
+  const imgZone = p.imageUrl
+    ? `<div class="card-img-wrap" style="position:relative">
+        <img class="card-img" src="${esc(p.imageUrl)}" alt="" style="cursor:default"/>
+        <div style="position:absolute;bottom:6px;left:6px;right:6px;">
+          <input type="text" class="card-field" style="font-size:.7rem;background:rgba(255,255,255,.85)"
+            placeholder="Link ảnh mới..." data-field="imageUrl" data-id="${id}" value="${esc(p.imageUrl||'')}"/>
+        </div>
+       </div>`
+    : `<div class="img-paste-zone" id="paste-${id}" data-id="${id}">
+        <div class="icon">🖼</div>
+        <span>Ctrl+V ảnh hoặc nhập link</span>
+        <input type="text" placeholder="https://... link ảnh" data-field="imageUrl" data-id="${id}"/>
+       </div>`;
+
+  return `<div class="card" data-id="${id}">
+    <div class="card-edit-actions">
+      <button class="icon-btn icon-btn-del" onclick="deleteProduct('${id}')" title="Xoá sản phẩm">🗑</button>
+    </div>
+    ${imgZone}
+    <div class="card-body">
+      <input class="card-field card-field-title" type="text" placeholder="Tiêu đề sản phẩm..."
+        data-field="title" data-id="${id}" value="${esc(p.title||'')}"/>
+      <input class="card-field" type="text" placeholder="Link bài viết / sản phẩm..."
+        data-field="link" data-id="${id}" value="${esc(p.link||'')}"/>
+    </div>
+  </div>`;
+}
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── BIND EDIT EVENTS ──
+function bindEditEvents(id) {
+  // Text inputs → debounce save
+  document.querySelectorAll(`[data-id="${id}"]`).forEach(el => {
+    if (el.tagName === 'INPUT') {
+      el.addEventListener('input', debounce(e => {
+        const field = e.target.dataset.field;
+        const val = e.target.value.trim();
+        updateField(id, field, val);
+      }, 600));
+    }
+  });
+
+  // Paste zone
+  const pasteZone = document.getElementById('paste-' + id);
+  if (pasteZone) {
+    pasteZone.addEventListener('paste', e => {
+      const items = e.clipboardData.items;
+      for (const item of items) {
+        if (item.type.startsWith('image/')) {
+          e.preventDefault();
+          const file = item.getAsFile();
+          const reader = new FileReader();
+          reader.onload = ev => {
+            updateField(id, 'imageUrl', ev.target.result);
+          };
+          reader.readAsDataURL(file);
+          return;
+        }
+      }
+    });
+    pasteZone.addEventListener('click', () => {
+      const inp = pasteZone.querySelector('input');
+      if (inp) inp.focus();
+    });
+  }
+}
+
+// ── FIREBASE OPS ──
+window.addProduct = function() {
+  push(PRODUCTS_REF, { title: '', imageUrl: '', link: '', createdAt: Date.now() });
+};
+
+window.deleteProduct = function(id) {
+  if (confirm('Xoá sản phẩm này?')) {
+    remove(ref(db, 'products/' + id));
+  }
+};
+
+function updateField(id, field, val) {
+  update(ref(db, 'products/' + id), { [field]: val });
+}
+
+// ── COPY TITLE ──
+window.copyTitle = function(id) {
+  const p = products[id];
+  if (!p || !p.title) return;
+  navigator.clipboard.writeText(p.title).then(() => showToast('✅ Đã copy: ' + p.title));
+};
+
+function showToast(msg) {
+  const t = document.getElementById('copyToast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── UTILS ──
+function debounce(fn, ms) {
+  let timer;
+  return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), ms); };
+}
+
+// ── GLOBAL PASTE (khi focus vào paste zone bất kỳ) ──
+document.addEventListener('paste', e => {
+  if (currentMode !== 'edit') return;
+  // chỉ xử lý khi focus vào paste-zone
+  const focused = document.activeElement;
+  if (!focused) return;
+  const zone = focused.closest('.img-paste-zone');
+  if (!zone) return;
+  const id = zone.dataset.id;
+  const items = e.clipboardData.items;
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      e.preventDefault();
+      const file = item.getAsFile();
+      const reader = new FileReader();
+      reader.onload = ev => updateField(id, 'imageUrl', ev.target.result);
+      reader.readAsDataURL(file);
+      return;
+    }
+  }
+});
+
+// init mode
+document.body.className = 'mode-view';
+</script>
+</body>
+</html>
