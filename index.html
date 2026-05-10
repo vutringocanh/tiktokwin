@@ -12,6 +12,8 @@
     --border: #e2ddd6;
     --accent: #c8813a;
     --accent-dark: #a5621e;
+    --accent2: #3a7fc8;
+    --accent2-light: #e8f2fd;
     --text: #1a1612;
     --text-muted: #7a7168;
     --danger: #c0392b;
@@ -88,13 +90,6 @@
   }
   .btn-add:hover { background: var(--accent-dark); }
 
-  .btn-danger {
-    background: #fdf0ef;
-    color: var(--danger);
-    border: 1.5px solid #f5c6c2;
-  }
-  .btn-danger:hover { background: var(--danger); color: #fff; }
-
   /* ── GRID ── */
   main {
     padding: 28px;
@@ -123,7 +118,6 @@
 
   .card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); }
 
-  /* image area */
   .card-img {
     width: 100%;
     aspect-ratio: 3/4;
@@ -146,14 +140,12 @@
     font-size: 2.5rem;
   }
 
-  /* image wrapper clips overflow for zoom */
   .card-img-wrap {
     overflow: hidden;
     position: relative;
     cursor: pointer;
   }
 
-  /* VIEW mode link overlay */
   .card-img-wrap .open-link {
     position: absolute;
     inset: 0;
@@ -182,6 +174,67 @@
   }
   .card-title-view:hover { color: var(--accent); }
 
+  /* Link rows in view mode */
+  .link-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .link-badge {
+    flex-shrink: 0;
+    font-size: .65rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 5px;
+    letter-spacing: .3px;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+  }
+  .link-badge-1 {
+    background: #fff3e0;
+    color: var(--accent);
+    border: 1px solid #f5dfc0;
+  }
+  .link-badge-1:hover { background: var(--accent); color: #fff; }
+
+  .link-badge-2 {
+    background: var(--accent2-light);
+    color: var(--accent2);
+    border: 1px solid #c2dbf5;
+  }
+  .link-badge-2:hover { background: var(--accent2); color: #fff; }
+
+  .card-link-view {
+    font-size: .72rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .card-link-view:hover { color: var(--accent); text-decoration: underline; }
+
+  /* product ID pill */
+  .pid-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: .68rem;
+    color: var(--text-muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: .2px;
+  }
+  .pid-pill:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* copy toast */
   .copy-toast {
     position: fixed;
     bottom: 28px;
@@ -198,18 +251,6 @@
     z-index: 9999;
   }
   .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  .card-link-view {
-    font-size: .75rem;
-    color: var(--accent);
-    text-decoration: none;
-    word-break: break-all;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .card-link-view:hover { text-decoration: underline; }
 
   /* ── EDIT CARD ── */
   .card-edit-actions {
@@ -252,9 +293,49 @@
   }
   .card-field:focus { border-color: var(--accent); background: #fff; }
   .card-field::placeholder { color: #bcb6ae; }
-
   .card-field-title { font-weight: 600; font-size: .85rem; }
 
+  /* link2 field has blue accent */
+  .card-field-link2:focus { border-color: var(--accent2); }
+
+  /* field label wrapper */
+  .field-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .field-tag {
+    font-size: .62rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    letter-spacing: .3px;
+  }
+  .field-tag-1 { background: #fff3e0; color: var(--accent); border: 1px solid #f5dfc0; }
+  .field-tag-2 { background: var(--accent2-light); color: var(--accent2); border: 1px solid #c2dbf5; }
+
+  /* auto-filled shimmer */
+  @keyframes autofill-pulse {
+    0% { background: #e8f5e9; }
+    100% { background: var(--bg); }
+  }
+  .card-field.just-filled { animation: autofill-pulse .5s ease; }
+
+  /* pid display in edit */
+  .pid-edit {
+    font-size: .68rem;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 2px 0 0;
+    letter-spacing: .2px;
+  }
+  .pid-edit span {
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* img paste zone */
   .img-paste-zone {
     width: 100%;
     aspect-ratio: 3/4;
@@ -273,7 +354,6 @@
   }
   .img-paste-zone:hover { background: #e5dfd5; }
   .img-paste-zone .icon { font-size: 1.8rem; }
-
   .img-paste-zone input[type=text] {
     width: 90%;
     margin-top: 6px;
@@ -289,11 +369,10 @@
   }
   .img-paste-zone input[type=text]:focus { border-color: var(--accent); }
 
-  /* ── ADD CARD PLACEHOLDER ── */
+  /* ── ADD CARD ── */
   .card-add {
     border: 2px dashed var(--border);
     border-radius: var(--radius);
-    aspect-ratio: unset;
     min-height: 280px;
     display: flex;
     flex-direction: column;
@@ -308,7 +387,6 @@
   }
   .card-add:hover { border-color: var(--accent); color: var(--accent); background: rgba(200,129,58,.04); }
   .card-add .big-plus { font-size: 2rem; line-height: 1; }
-
   .mode-view .card-add { display: none; }
 
   /* ── EMPTY STATE ── */
@@ -321,7 +399,6 @@
   .empty .empty-icon { font-size: 3rem; margin-bottom: 12px; }
   .empty p { font-size: .95rem; }
 
-  /* ── LOADING ── */
   .loading {
     grid-column: 1/-1;
     text-align: center;
@@ -330,7 +407,6 @@
     font-size: .9rem;
   }
 
-  /* ── MODE BADGE ── */
   .mode-badge {
     font-size: .72rem;
     padding: 3px 10px;
@@ -366,9 +442,8 @@
   </div>
 </main>
 
-<div class="copy-toast" id="copyToast">✅ Đã copy tiêu đề!</div>
+<div class="copy-toast" id="copyToast"></div>
 
-<!-- Firebase SDKs -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js";
 import { getDatabase, ref, onValue, push, remove, update }
@@ -389,11 +464,54 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const PRODUCTS_REF = ref(db, 'products');
 
-// ── STATE ──
+// ─── STATE ───────────────────────────────────────────────
 let currentMode = 'view';
-let products = {}; // { id: { title, imageUrl, link } }
+let products = {};
 
-// ── MODE ──
+// ─── URL CONVERSION UTILS ────────────────────────────────
+
+/**
+ * Extract TikTok product ID from either link format.
+ * Link 1: .../pdp/[slug-]/ID?... or .../pdp/ID
+ * Link 2: .../view/product/ID?...
+ */
+function extractProductId(url) {
+  if (!url) return null;
+  url = url.trim();
+
+  // Link 2 pattern: /view/product/{ID}
+  let m = url.match(/\/view\/product\/(\d{10,20})/);
+  if (m) return m[1];
+
+  // Link 1 pattern: /pdp/.../{ID} — ID is the last numeric segment in the path
+  m = url.match(/\/pdp\/(?:[^/?]*\/)?(\d{10,20})(?:[/?]|$)/);
+  if (m) return m[1];
+
+  // Fallback: any large numeric in the URL path (before query)
+  const path = url.split('?')[0];
+  const all = [...path.matchAll(/(\d{10,20})/g)];
+  if (all.length) return all[all.length - 1][1]; // take last one
+
+  return null;
+}
+
+function makeLink1(id) {
+  return id ? `https://www.tiktok.com/shop/vn/pdp/${id}` : '';
+}
+
+function makeLink2(id) {
+  return id ? `https://www.tiktok.com/view/product/${id}` : '';
+}
+
+function isLink2(url) {
+  return url && url.includes('/view/product/');
+}
+
+function isLink1(url) {
+  return url && url.includes('/shop/') && url.includes('/pdp/');
+}
+
+// ─── MODE ────────────────────────────────────────────────
 window.setMode = function(mode) {
   currentMode = mode;
   document.body.className = 'mode-' + mode;
@@ -405,32 +523,26 @@ window.setMode = function(mode) {
   renderGrid();
 };
 
-// ── FIREBASE LISTEN ──
+// ─── FIREBASE LISTEN ─────────────────────────────────────
 onValue(PRODUCTS_REF, snap => {
   products = snap.val() || {};
   renderGrid();
 });
 
-// ── RENDER ──
+// ─── RENDER ──────────────────────────────────────────────
 function renderGrid() {
   const grid = document.getElementById('grid');
   const ids = Object.keys(products);
-
   let html = '';
 
   if (ids.length === 0 && currentMode === 'view') {
     html = `<div class="empty">
       <div class="empty-icon">🛒</div>
-      <p>Chưa có sản phẩm nào. Chuyển sang chế độ chỉnh sửa để thêm!</p>
+      <p>Chưa có sản phẩm nào. Chuyển sang chỉnh sửa để thêm!</p>
     </div>`;
   } else {
     ids.forEach(id => {
-      const p = products[id];
-      if (currentMode === 'view') {
-        html += cardView(id, p);
-      } else {
-        html += cardEdit(id, p);
-      }
+      html += currentMode === 'view' ? cardView(id, products[id]) : cardEdit(id, products[id]);
     });
     if (currentMode === 'edit') {
       html += `<div class="card card-add" onclick="addProduct()">
@@ -441,28 +553,39 @@ function renderGrid() {
   }
 
   grid.innerHTML = html;
-
-  // Bind edit events
-  if (currentMode === 'edit') {
-    ids.forEach(id => {
-      bindEditEvents(id);
-    });
-  }
+  if (currentMode === 'edit') ids.forEach(bindEditEvents);
 }
 
+// ─── CARD VIEW ───────────────────────────────────────────
 function cardView(id, p) {
+  const pid = extractProductId(p.link) || extractProductId(p.link2);
+
   const imgHtml = p.imageUrl
     ? `<img class="card-img" src="${esc(p.imageUrl)}" alt="${esc(p.title||'')}" loading="lazy"/>`
     : `<div class="card-img-placeholder">🖼</div>`;
 
-  const linkHref = p.link || '#';
+  const linkHref = p.link || p.link2 || '#';
+
   const titleHtml = p.title
-    ? `<div class="card-title-view" onclick="copyTitle('${esc(id)}')" title="Click để copy tiêu đề">${esc(p.title)}</div>`
+    ? `<div class="card-title-view" onclick="copyText('${esc(p.title)}','Đã copy tiêu đề!')" title="Click để copy tiêu đề">${esc(p.title)}</div>`
     : `<div class="card-title-view" style="color:#bcb6ae">Chưa có tiêu đề</div>`;
 
-  const linkHtml = p.link
-    ? `<a class="card-link-view" href="${esc(p.link)}" target="_blank" rel="noopener">${esc(p.link)}</a>`
-    : '';
+  const link1Html = p.link ? `
+    <div class="link-row">
+      <button class="link-badge link-badge-1" onclick="copyText('${esc(p.link)}','✅ Đã copy Link 1!')" title="Copy link 1">L1</button>
+      <a class="card-link-view" href="${esc(p.link)}" target="_blank" rel="noopener">${esc(p.link)}</a>
+    </div>` : '';
+
+  const link2Html = p.link2 ? `
+    <div class="link-row">
+      <button class="link-badge link-badge-2" onclick="copyText('${esc(p.link2)}','✅ Đã copy Link 2!')" title="Copy link 2">L2</button>
+      <a class="card-link-view" href="${esc(p.link2)}" target="_blank" rel="noopener">${esc(p.link2)}</a>
+    </div>` : '';
+
+  const pidHtml = pid ? `
+    <div class="pid-pill" onclick="copyText('${pid}','✅ Đã copy ID: ${pid}')" title="Copy product ID">
+      🔖 ${pid}
+    </div>` : '';
 
   return `<div class="card" data-id="${id}">
     <div class="card-img-wrap">
@@ -471,12 +594,17 @@ function cardView(id, p) {
     </div>
     <div class="card-body">
       ${titleHtml}
-      ${linkHtml}
+      ${link1Html}
+      ${link2Html}
+      ${pidHtml}
     </div>
   </div>`;
 }
 
+// ─── CARD EDIT ───────────────────────────────────────────
 function cardEdit(id, p) {
+  const pid = extractProductId(p.link) || extractProductId(p.link2);
+
   const imgZone = p.imageUrl
     ? `<div class="card-img-wrap" style="position:relative">
         <img class="card-img" src="${esc(p.imageUrl)}" alt="" style="cursor:default"/>
@@ -491,16 +619,40 @@ function cardEdit(id, p) {
         <input type="text" placeholder="https://... link ảnh" data-field="imageUrl" data-id="${id}"/>
        </div>`;
 
+  const pidRow = pid
+    ? `<div class="pid-edit">Product ID: <span>${pid}</span></div>`
+    : '';
+
   return `<div class="card" data-id="${id}">
     <div class="card-edit-actions">
-      <button class="icon-btn icon-btn-del" onclick="deleteProduct('${id}')" title="Xoá sản phẩm">🗑</button>
+      <button class="icon-btn icon-btn-del" onclick="deleteProduct('${id}')" title="Xoá">🗑</button>
     </div>
     ${imgZone}
     <div class="card-body">
       <input class="card-field card-field-title" type="text" placeholder="Tiêu đề sản phẩm..."
         data-field="title" data-id="${id}" value="${esc(p.title||'')}"/>
-      <input class="card-field" type="text" placeholder="Link bài viết / sản phẩm..."
-        data-field="link" data-id="${id}" value="${esc(p.link||'')}"/>
+
+      <div>
+        <div class="field-label" style="margin-bottom:4px">
+          <span class="field-tag field-tag-1">Link 1</span>
+          <span style="font-size:.68rem;color:var(--text-muted)">tiktok.com/shop/.../pdp/...</span>
+        </div>
+        <input class="card-field" type="text"
+          placeholder="https://www.tiktok.com/shop/vn/pdp/..."
+          data-field="link" data-id="${id}" value="${esc(p.link||'')}"/>
+      </div>
+
+      <div>
+        <div class="field-label" style="margin-bottom:4px">
+          <span class="field-tag field-tag-2">Link 2</span>
+          <span style="font-size:.68rem;color:var(--text-muted)">tiktok.com/view/product/...</span>
+        </div>
+        <input class="card-field card-field-link2" type="text"
+          placeholder="https://www.tiktok.com/view/product/..."
+          data-field="link2" data-id="${id}" value="${esc(p.link2||'')}"/>
+      </div>
+
+      ${pidRow}
     </div>
   </div>`;
 }
@@ -510,20 +662,42 @@ function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ── BIND EDIT EVENTS ──
+// ─── BIND EDIT EVENTS ────────────────────────────────────
 function bindEditEvents(id) {
-  // Text inputs → debounce save
   document.querySelectorAll(`[data-id="${id}"]`).forEach(el => {
-    if (el.tagName === 'INPUT') {
-      el.addEventListener('input', debounce(e => {
-        const field = e.target.dataset.field;
-        const val = e.target.value.trim();
+    if (el.tagName !== 'INPUT') return;
+
+    el.addEventListener('input', debounce(e => {
+      const field = e.target.dataset.field;
+      const val = e.target.value.trim();
+
+      if (field === 'link') {
+        // link1 changed → derive link2
+        const pid = extractProductId(val);
+        const derived2 = makeLink2(pid);
+        updateField(id, 'link', val);
+        if (pid) {
+          updateField(id, 'link2', derived2);
+          flashField(id, 'link2');
+        }
+
+      } else if (field === 'link2') {
+        // link2 changed → derive link1
+        const pid = extractProductId(val);
+        const derived1 = makeLink1(pid);
+        updateField(id, 'link2', val);
+        if (pid) {
+          updateField(id, 'link', derived1);
+          flashField(id, 'link');
+        }
+
+      } else {
         updateField(id, field, val);
-      }, 600));
-    }
+      }
+    }, 500));
   });
 
-  // Paste zone
+  // Paste zone for image
   const pasteZone = document.getElementById('paste-' + id);
   if (pasteZone) {
     pasteZone.addEventListener('paste', e => {
@@ -531,81 +705,79 @@ function bindEditEvents(id) {
       for (const item of items) {
         if (item.type.startsWith('image/')) {
           e.preventDefault();
-          const file = item.getAsFile();
           const reader = new FileReader();
-          reader.onload = ev => {
-            updateField(id, 'imageUrl', ev.target.result);
-          };
-          reader.readAsDataURL(file);
+          reader.onload = ev => updateField(id, 'imageUrl', ev.target.result);
+          reader.readAsDataURL(item.getAsFile());
           return;
         }
       }
     });
-    pasteZone.addEventListener('click', () => {
-      const inp = pasteZone.querySelector('input');
-      if (inp) inp.focus();
-    });
+    pasteZone.addEventListener('click', () => pasteZone.querySelector('input')?.focus());
   }
 }
 
-// ── FIREBASE OPS ──
+/** Flash a sibling field to indicate it was auto-filled */
+function flashField(id, field) {
+  const el = document.querySelector(`[data-id="${id}"][data-field="${field}"]`);
+  if (!el) return;
+  el.classList.remove('just-filled');
+  void el.offsetWidth; // reflow
+  el.classList.add('just-filled');
+  setTimeout(() => el.classList.remove('just-filled'), 600);
+}
+
+// ─── FIREBASE OPS ────────────────────────────────────────
 window.addProduct = function() {
-  push(PRODUCTS_REF, { title: '', imageUrl: '', link: '', createdAt: Date.now() });
+  push(PRODUCTS_REF, { title: '', imageUrl: '', link: '', link2: '', createdAt: Date.now() });
 };
 
 window.deleteProduct = function(id) {
-  if (confirm('Xoá sản phẩm này?')) {
-    remove(ref(db, 'products/' + id));
-  }
+  if (confirm('Xoá sản phẩm này?')) remove(ref(db, 'products/' + id));
 };
 
 function updateField(id, field, val) {
   update(ref(db, 'products/' + id), { [field]: val });
 }
 
-// ── COPY TITLE ──
-window.copyTitle = function(id) {
-  const p = products[id];
-  if (!p || !p.title) return;
-  navigator.clipboard.writeText(p.title).then(() => showToast('✅ Đã copy: ' + p.title));
+// ─── COPY HELPERS ────────────────────────────────────────
+window.copyText = function(text, msg) {
+  if (!text) return;
+  // decode HTML entities before copying
+  const decoded = text.replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+  navigator.clipboard.writeText(decoded).then(() => showToast(msg || '✅ Đã copy!'));
 };
 
 function showToast(msg) {
   const t = document.getElementById('copyToast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-// ── UTILS ──
-function debounce(fn, ms) {
-  let timer;
-  return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), ms); };
-}
-
-// ── GLOBAL PASTE (khi focus vào paste zone bất kỳ) ──
+// ─── GLOBAL PASTE (image into focused paste-zone) ────────
 document.addEventListener('paste', e => {
   if (currentMode !== 'edit') return;
-  // chỉ xử lý khi focus vào paste-zone
-  const focused = document.activeElement;
-  if (!focused) return;
-  const zone = focused.closest('.img-paste-zone');
+  const zone = document.activeElement?.closest('.img-paste-zone');
   if (!zone) return;
   const id = zone.dataset.id;
-  const items = e.clipboardData.items;
-  for (const item of items) {
+  for (const item of e.clipboardData.items) {
     if (item.type.startsWith('image/')) {
       e.preventDefault();
-      const file = item.getAsFile();
       const reader = new FileReader();
       reader.onload = ev => updateField(id, 'imageUrl', ev.target.result);
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(item.getAsFile());
       return;
     }
   }
 });
 
-// init mode
+// ─── UTILS ───────────────────────────────────────────────
+function debounce(fn, ms) {
+  let t;
+  return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
+}
+
+// init
 document.body.className = 'mode-view';
 </script>
 </body>
