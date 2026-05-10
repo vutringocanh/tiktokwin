@@ -499,8 +499,10 @@ function makeLink1(id) {
   return id ? `https://www.tiktok.com/shop/vn/pdp/${id}` : '';
 }
 
+const LINK2_SUFFIX = '?_svg=1&chain_key=%7B%22t%22%3A1%2C%22k%22%3A%22000000000000000007636336038548932359%22%2C%22sc%22%3A%22messenger%22%7D';
+
 function makeLink2(id) {
-  return id ? `https://www.tiktok.com/view/product/${id}` : '';
+  return id ? `https://www.tiktok.com/view/product/${id}${LINK2_SUFFIX}` : '';
 }
 
 function isLink2(url) {
